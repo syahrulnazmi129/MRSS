@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Repair Request System</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #e3eafc 100%);
+            min-height: 100vh;
+            margin: 0;
+            color: #222;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 32px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #555;
+            font-size: 1.1rem;
+        }
+        .login-section {
+            max-width: 400px;
+            margin: 0 auto 32px auto;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+        }
+        .login-section h2 {
+            text-align: center;
+            margin-bottom: 18px;
+            color: #1976d2;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            color: #222;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e3eafc;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #fff;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #1976d2;
+            outline: none;
+        }
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(90deg, #1976d2 0%, #64b5f6 100%);
+            color: white;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+            transform: translateY(-2px);
+        }
+        .dashboard {
+            margin-top: 32px;
+        }
+        .dashboard-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 18px;
+        }
+        .stats-cards {
+            display: flex;
+            gap: 18px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            flex: 1;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.04);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .stat-label {
+            color: #555;
+            font-size: 1rem;
+        }
+        .requests-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+        .requests-table th, .requests-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e3eafc;
+            text-align: left;
+        }
+        .requests-table th {
+            background: #e3eafc;
+            color: #1976d2;
+            font-weight: 600;
+        }
+        .requests-table tr:hover {
+            background: #f1f8ff;
+        }
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #e3eafc;
+            color: #1976d2;
+        }
+        .status-completed {
+            background: #c8e6c9;
+            color: #388e3c;
+        }
+        .status-pending {
+            background: #fff9c4;
+            color: #fbc02d;
+        }
+        .status-rejected {
+            background: #ffcdd2;
+            color: #d32f2f;
+        }
+        /* Add this CSS to your <style> section for improved interactive design and better Action column alignment */
+
+        .action-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: stretch;
+            min-width: 180px;
+        }
+
+        .action-cell textarea {
+            width: 100%;
+            min-width: 160px;
+            max-width: 100%;
+            resize: vertical;
+            border-radius: 8px;
+            border: 2px solid #e3eafc;
+            padding: 8px;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            background: #f8f9fa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .action-cell textarea:focus {
+            border-color: #095caf;
+            box-shadow: 0 0 0 2px #1976d233;
+        }
+
+        .action-cell .btn {
+            width: 48%;
+            min-width: 80px;
+            margin-right: 4px;
+            margin-bottom: 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .action-cell .btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 12px rgba(79,140,255,0.12);
+        }
+
+        .requests-table td {
+            vertical-align: top;
+        }
+
+        .requests-table td:last-child {
+            min-width: 200px;
+            width: 200px;
+        }
+
+        .status-badge {
+            transition: background 0.3s, color 0.3s;
+            box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+        }
+
+        .stat-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(79,140,255,0.16);
+            background: #e3eafc;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px #1976d233;
+        }
+
+        .login-section, .form-group, .stat-card, .requests-table, .dashboard {
+            animation: fadeInUp 0.7s;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Armstrong Autopoarts Digital RRS</h1>
+            <p>Maintenance Repair Request System</h1>
+            <p>Submit and track your machine repair requests easily.</p>
+        </div>
+        <!-- Logout Button -->
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 18px;">
+            <button class="btn" id="logout-btn" style="display:none;" onclick="logout()">Logout</button>
+        </div>
+        <!-- Login Section -->
+        <div class="login-section" id="login-section">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="login-role">Role</label>
+                <select id="login-role">
+                    <option value="requestor">Requestor</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="login-name">Name</label>
+                <input type="text" id="login-name" placeholder="Enter your name">
+            </div>
+            <div class="form-group" id="login-dept-group">
+                <label for="login-department">Department</label>
+                <input type="text" id="login-department" placeholder="Enter your department">
+            </div>
+            <div class="form-group" id="login-password-group" style="display:none;">
+                <label for="login-password">Admin Password</label>
+                <input type="password" id="login-password" placeholder="Enter admin password">
+            </div>
+            <button class="btn" onclick="login()">Login</button>
+        </div>
+        <!-- Request Form Section -->
+        <div id="request-form-section" style="display:none;">
+            <h2 style="color:#1976d2;margin-bottom:18px;">Maintenance Repair Request Form</h2>
+            <form id="repair-form" onsubmit="submitRequest(event)">
+                <div class="form-group">
+                    <label for="requestor-name">Requestor Name</label>
+                    <input type="text" id="requestor-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" required>
+                </div>
+                <div class="form-group">
+                    <label for="date-request">Date of Request</label>
+                    <input type="text" id="date-request" required placeholder="DD/MM/YYYY">
+                </div>
+                <div class="form-group">
+                    <label for="time-request">Time of Request (GMT+8)</label>
+                    <input type="time" id="time-request" required>
+                </div>
+                <div class="form-group">
+                    <label for="machine-name">Machine Name</label>
+                    <input type="text" id="machine-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason</label>
+                    <input type="text" id="reason" required>
+                </div>
+                <button class="btn" type="submit">Submit Request</button>
+            </form>
+        </div>
+        <!-- Dashboard Section -->
+        <div class="dashboard" id="dashboard-section" style="display:none;">
+            <div class="dashboard-header">Dashboard</div>
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-number" id="pending-count">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completed-count">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="rejected-count">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-count">0</div>
+                    <div class="stat-label">Total Requests</div>
+                </div>
+            </div>
+            <table class="requests-table" id="requests-table">
+                <thead>
+                    <tr>
+                        <th>Requestor Name</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Machine Name</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Admin Comment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="requests-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        let requests = JSON.parse(localStorage.getItem('repair_requests') || '[]');
+        let currentUser = null;
+
+        function login() {
+            const role = document.getElementById('login-role').value;
+            const name = document.getElementById('login-name').value.trim();
+            const dept = document.getElementById('login-department').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!name || (role === 'requestor' && !dept)) {
+                alert('Please fill in all fields.');
+                return;
+            }
+            if (role === 'admin') {
+                if (password !== '1234') {
+                    alert('Incorrect admin password.');
+                    return;
+                }
+            }
+            currentUser = { role, name, department: dept };
+            document.getElementById('login-section').style.display = 'none';
+
+            if (role === 'requestor') {
+                document.getElementById('request-form-section').style.display = '';
+                document.getElementById('requestor-name').value = name;
+                document.getElementById('department').value = dept;
+                document.getElementById('dashboard-section').style.display = '';
+            } else {
+                document.getElementById('dashboard-section').style.display = '';
+                document.getElementById('request-form-section').style.display = 'none';
+            }
+            document.getElementById('logout-btn').style.display = '';
+            updateDashboard();
+        }
+
+        function submitRequest(e) {
+            e.preventDefault();
+            const req = {
+                requestor: document.getElementById('requestor-name').value,
+                department: document.getElementById('department').value,
+                date: document.getElementById('date-request').value,
+                time: document.getElementById('time-request').value,
+                machine: document.getElementById('machine-name').value,
+                reason: document.getElementById('reason').value,
+                status: 'Pending',
+                adminComment: ''
+            };
+            requests.push(req);
+            localStorage.setItem('repair_requests', JSON.stringify(requests));
+            updateDashboard();
+            e.target.reset();
+            document.getElementById('requestor-name').value = currentUser.name;
+            document.getElementById('department').value = currentUser.department;
+            alert('Request submitted!');
+        }
+
+        function updateDashboard() {
+            let filtered = requests;
+            if (currentUser && currentUser.role === 'requestor') {
+                filtered = requests.filter(r => r.requestor === currentUser.name && r.department === currentUser.department);
+            }
+            document.getElementById('pending-count').textContent = filtered.filter(r => r.status === 'Pending').length;
+            document.getElementById('completed-count').textContent = filtered.filter(r => r.status === 'Completed').length;
+            document.getElementById('rejected-count').textContent = filtered.filter(r => r.status === 'Rejected').length;
+            document.getElementById('total-count').textContent = filtered.length;
+
+            const tbody = document.getElementById('requests-tbody');
+            tbody.innerHTML = '';
+            filtered.forEach((r, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${r.requestor}</td>
+                        <td>${r.department}</td>
+                        <td>${r.date}</td>
+                        <td>${r.time}</td>
+                        <td>${r.machine}</td>
+                        <td>${r.reason}</td>
+                        <td>
+                            <span class="status-badge status-${r.status.toLowerCase()}">${r.status}</span>
+                        </td>
+                        <td>${r.adminComment ? r.adminComment : ''}</td>
+                        <td>
+                            ${currentUser.role === 'admin' ? adminActions(idx, r.status) : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function adminActions(idx, status) {
+            if (status === 'Pending') {
+                return `
+                    <div class="action-cell">
+                        <textarea id="comment-${idx}" placeholder="Add repair comment..." rows="2"></textarea>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn" style="background:#388e3c;" onclick="changeStatus(${idx},'Completed')">Complete</button>
+                            <button class="btn" style="background:#d32f2f;" onclick="changeStatus(${idx},'Rejected')">Reject</button>
+                        </div>
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        function changeStatus(idx, newStatus) {
+            const commentInput = document.getElementById('comment-' + idx);
+            requests[idx].status = newStatus;
+            requests[idx].adminComment = commentInput ? commentInput.value : '';
+            localStorage.setItem('repair_requests', JSON.stringify(requests));
+            updateDashboard();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('login-section').style.display = '';
+            document.getElementById('request-form-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'none';
+        }
+
+        // Show/hide department and password fields on role change
+        document.getElementById('login-role').addEventListener('change', function() {
+            document.getElementById('login-dept-group').style.display =
+                this.value === 'requestor' ? '' : 'none';
+            document.getElementById('login-password-group').style.display =
+                this.value === 'admin' ? '' : 'none';
+        });
+
+        // Also hide logout button on page load
+        document.getElementById('logout-btn').style.display = 'none';
+    </script>
+</body>
+</html>
